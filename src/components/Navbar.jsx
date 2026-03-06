@@ -1,11 +1,11 @@
-// components/Navbar.jsx
+// src/components/Navbar.jsx
 import React from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Avatar, Tooltip } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Avatar, Tooltip, Button } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = ({ onMenuClick }) => {
-  const username = localStorage.getItem('user') || 'User';
-  const avatarUrl = `https://i.pravatar.cc/150?u=${username}`;
+  const { user, logout } = useAuth();
 
   return (
     <AppBar position="static">
@@ -14,9 +14,14 @@ const Navbar = ({ onMenuClick }) => {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>Dashboard</Typography>
-        <Tooltip title={username}>
-          <Avatar src={avatarUrl} />
-        </Tooltip>
+        {user && (
+          <>
+            <Tooltip title={user.email}>
+              <Avatar src={user.photoURL || undefined}>{user.email?.[0]}</Avatar>
+            </Tooltip>
+            <Button color="inherit" onClick={logout}>Logout</Button>
+          </>
+        )}
       </Toolbar>
     </AppBar>
   );

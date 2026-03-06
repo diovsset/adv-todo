@@ -1,79 +1,45 @@
-// pages/Login.jsx
+// src/pages/Login.jsx
 import React, { useState } from 'react';
 import { Button, TextField, Container, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '../firebase';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { login } = useAuth();
 
-  const handleLogin = () => {
-    if (username) {
-      login(username);
+  const handleEmailLogin = async () => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
       navigate('/dashboard');
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      navigate('/dashboard');
+    } catch (err) {
+      alert(err.message);
     }
   };
 
   return (
     <Container maxWidth="sm" sx={{ mt: 10 }}>
-      <Typography variant="h4" gutterBottom>Login</Typography>
-      <TextField fullWidth label="Username" onChange={e => setUsername(e.target.value)} />
-      <Button variant="contained" sx={{ mt: 2 }} onClick={handleLogin}>Login</Button>
+      <Typography variant="h4">Login</Typography>
+      <TextField fullWidth label="Email" onChange={e => setEmail(e.target.value)} />
+      <TextField fullWidth label="Password" type="password" sx={{ mt: 2 }} onChange={e => setPassword(e.target.value)} />
+      <Button fullWidth variant="contained" sx={{ mt: 2 }} onClick={handleEmailLogin}>Login</Button>
+      <Button fullWidth variant="outlined" sx={{ mt: 2 }} onClick={handleGoogleLogin}>Login with Google</Button>
     </Container>
   );
 };
 
 export default Login;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React from "react";
-// import React, {useState} from "react";
-// import {Button, TextField, Container, Typography} from '@mui/material';
-// import {useNavigate} from 'react-router-dom'
-
-// const Login = () => {
-//     const [username, setUsername] = useState('');
-//     const navigate = useNavigate(); //This is a tool from react-router-dom that acts like a manual redirect. 
-
-//     const handleLogin = () => {
-//         if(username){
-//             localStorage.setItem('user', username); // Saves "username" to the browser's storage
-//             navigate('/dashboard'); // Sends the user to the /dashboard URL
-//         }
-//     };
-
-//     return (
-//         <Container maxWidth="sm" sx={{mt: 10}}>
-//             <Typography variant='h4' gutterBottom>Login</Typography>
-//             <TextField fullWidth label="Username" onChange={e => setUsername(e.target.value)} />
-//             <Button variant="contained" sx={{mt: 2}} onClick={handleLogin}>Login</Button>
-//         </Container>
-//     )
-
-// };
-// export default Login;
-
-
 
 
 // 3. The Template (The Return)
